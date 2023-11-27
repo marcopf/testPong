@@ -1,0 +1,10 @@
+canvas
+{
+	height: 100svh !important;
+	width: 100svw !important;
+}
+
+body
+{
+	margin: 0;
+}

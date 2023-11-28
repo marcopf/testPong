@@ -96,13 +96,13 @@ loader.load( './human/scene.gltf', function ( gltf ) {
 	console.error( error );
 
 } );
-
+let test = 0;
 function animate() {
 	requestAnimationFrame( animate );
 	if (deltaX != 0 && deltaZ != 0)
 	{
-		deltaX > 0 ? deltaX += 0.0001 : deltaX -= 0.0001;
-		deltaZ > 0 ? deltaZ += 0.0001 : deltaZ -= 0.0001;
+		deltaX > 0 ? deltaX += 0.0006 : deltaX -= 0.0006;
+		deltaZ > 0 ? deltaZ += 0.0006 : deltaZ -= 0.0006;
 	}
 	const ballColl = new THREE.Box3().setFromObject(ball);
 	const topPillsColl = new THREE.Box3().setFromObject(topPills);
@@ -130,8 +130,8 @@ function animate() {
 window.addEventListener("keydown", (key)=>{
 	if (key.key == "s")
 	{
-		deltaZ = 0.2;
-		deltaX = 0.07;
+		deltaZ = Math.floor((Math.random() * 100)) % 2 == 0 ? -(Math.random() * 0.6) - 0.3 : (Math.random() * 0.6) + 0.3;
+		deltaX = Math.floor((Math.random() * 100)) % 2 == 0 ? -(Math.random() * 0.6) - 0.3 : (Math.random() * 0.6) + 0.3;
 	}
 	if (key.key == "ArrowLeft" && bottomPills.position.x >= ((GAME_WIDTH - 40) / -2))
 		bottomPills.position.set( bottomPills.position.x - 10 , PILLS_Y, bottomPills.position.z);
@@ -140,7 +140,6 @@ window.addEventListener("keydown", (key)=>{
 })
 
 window.addEventListener("mousemove", (e)=>{
-	console.log(canv.offsetLeft, canv.clientWidth, e.x)
 	bottomPills.position.set(mapValue(e.x, canv.offsetLeft, canv.clientWidth + canv.offsetLeft, -PILLS_OFFSET, PILLS_OFFSET), PILLS_Y, bottomPills.position.z)
 })
 

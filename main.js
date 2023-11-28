@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-
 function mapValue(x, in_min, in_max, out_min, out_max)
 {
 	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
@@ -13,22 +12,24 @@ const GAME_HEIGHT = 250;
 const PILLS_Y = 6;
 const PILLS_OFFSET = (GAME_HEIGHT - 20) / 2;
 const BALL_Y = 6;
+const canv  = document.querySelector("#myCanv");
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+const camera = new THREE.PerspectiveCamera( 75, canv.clientWidth/canv.clientHeight, 0.1, 1000 );
 
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer({canvas: myCanv});
 
 //defining background
-const background = new THREE.TextureLoader().load('./textures/tenniBack.png');
+const background = new THREE.TextureLoader().load('./background.avif');
 scene.background = background
 
-renderer.setSize( window.innerWidth, window.innerHeight );
+renderer.setSize( canv.clientWidth, canv.clientWidth);
 document.body.appendChild( renderer.domElement );
 
-const controls = new OrbitControls( camera, renderer.domElement );
-camera.position.set( 0, 90, 170 );
-controls.update();
+// const controls = new OrbitControls( camera, renderer.domElement );
+camera.position.set( 0, 100, 250 );
+// controls.update();
+// camera.rotation.y = 1;
 
 //define ball
 const textureBall = new THREE.TextureLoader().load('./textures/ball.jpg');
@@ -81,10 +82,21 @@ let deltaX = 0.0;
 ball.rotation.z = 0.01;
 ball.rotation.x = 0.01;
 
-//defining wall
+//testing
+const loader = new GLTFLoader();
+let human;
+loader.load( './human/scene.gltf', function ( gltf ) {
+	human = gltf.scene;
+	human.scale.set(90, 90, 90)
+	human.position.set(10, -80, (-GAME_HEIGHT/2) -10)
+	scene.add( gltf.scene );
 
+}, undefined, function ( error ) {
 
-console.log("done setting up")
+	console.error( error );
+
+} );
+
 function animate() {
 	requestAnimationFrame( animate );
 	if (deltaX != 0 && deltaZ != 0)
@@ -107,16 +119,15 @@ function animate() {
 	}
 	if (ball.position.x > ((GAME_WIDTH - 20) / 2) || ball.position.x < ((GAME_WIDTH - 20) / -2))
 		deltaX = -deltaX;
-	controls.update();
-	renderer.render( scene, camera );
+	// controls.update();
 	topPills.position.set(ball.position.x, PILLS_Y, topPills.position.z)
-	ball.rotation.z += 0.05;
-	ball.rotation.x = 0.05;
+	human.position.x = ball.position.x;
 	ball.position.set(ball.position.x += deltaX, BALL_Y, ball.position.z += deltaZ);
+	renderer.render( scene, camera );
 
 }
 
-window.addEventListener("keyup", (key)=>{
+window.addEventListener("keydown", (key)=>{
 	if (key.key == "s")
 	{
 		deltaZ = 0.2;
@@ -129,7 +140,8 @@ window.addEventListener("keyup", (key)=>{
 })
 
 window.addEventListener("mousemove", (e)=>{
-	bottomPills.position.set(mapValue(e.x, 0, window.innerWidth, -PILLS_OFFSET, PILLS_OFFSET), PILLS_Y, bottomPills.position.z)
+	console.log(canv.offsetLeft, canv.clientWidth, e.x)
+	bottomPills.position.set(mapValue(e.x, canv.offsetLeft, canv.clientWidth + canv.offsetLeft, -PILLS_OFFSET, PILLS_OFFSET), PILLS_Y, bottomPills.position.z)
 })
 
 animate();

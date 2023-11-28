@@ -1,10 +1,29 @@
-canvas
+#myCanv
 {
-	height: 100svh !important;
-	width: 100svw !important;
+	height: 50svh !important;
+	width: 50svw !important;
+	border-radius: 10px;
+	border: 2px solid wheat;
+}
+
+h1
+{
+	color: white;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 90px;
+	background-color: cadetblue;
+	border-radius: 10px;
+	padding: 20px;
 }
 
 body
 {
+	background: url("./wallpaper.jpg");
+	background-size: contain;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100svh;
 	margin: 0;
 }
